@@ -70,5 +70,12 @@ function mountU {
 	sudo mount -t cifs -odomain=FRA,user=197178 '//pardmp22hd/197178$' /mnt/network/U
 }
 
+hashes_api_key=$(cat ~/.config/hashes_api_key)
+function hash_crack {
+        hash="$1"
+        curl 'https://hashes.org/api.php?key='$hashes_api_key'&query='$hash | js-beautify
+}
+
+
 . ~/scripts/funcs_bigip.sh
 . ~/scripts/funcs_docker.sh
