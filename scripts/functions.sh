@@ -76,6 +76,14 @@ function hash_crack {
         curl 'https://hashes.org/api.php?key='$hashes_api_key'&query='$hash | js-beautify
 }
 
+# functions to compress / decompress 'raw' zlib data
+zlib-decompress() {
+        cat "$@" | python -c 'import sys,zlib; sys.stdout.write(zlib.decompress(sys.stdin.read()))'
+}
+
+zlib-compress() {
+        cat "$@" | python -c 'import sys,zlib; sys.stdout.write(zlib.compress(sys.stdin.read()))'
+}
 
 . ~/scripts/funcs_bigip.sh
 . ~/scripts/funcs_docker.sh
