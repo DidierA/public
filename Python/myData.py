@@ -1,3 +1,6 @@
+# coding: utf8
+# python3 only
+
 import json
 # json.loads() : str -> objet
 # json.dumps() : objet -> str
@@ -9,21 +12,22 @@ from base64 import b64encode,b64decode
 
 from pprint import pprint
 
+import sys
+assert sys.version_info[0] >= 3 , "Python 3 required"
+
 class myData:
     """ classe pour gérer la serialisation/deserialisation json et base64 de n'importe quel objet Python """
-
-    encoding='ascii'
 
     def __init__(self,raw_input=b''):
         self.raw_data=raw_input
 
     @classmethod
     def str_to_bytes(cls,data_str):
-        return data_str.encode(cls.encoding)
+        return data_str.encode()
 
     @classmethod
     def bytes_to_str(cls,data_bytes):
-        return data_bytes.decode(cls.encoding)
+        return data_bytes.decode()
 
     def to_base64str(self):
         json_str=json.dumps(self.raw_data)
@@ -40,7 +44,7 @@ class myData:
         return self.raw_data
 
 # un dico simple
-a={'a':'Bonjour'}
+a={'a':'Bonjour tatayé'}
 
 data=myData(a)
 bstr=data.to_base64str()
