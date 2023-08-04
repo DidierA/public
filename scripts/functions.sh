@@ -88,7 +88,7 @@ zlib-compress() {
 # replace searchsploit with a friendly menu -- requires fzf,jq,xdg-open and wl-copy for wayland
 searchsploit-ui() {
     searchsploit "$@" -j | \
-    jq -r '.RESULTS_EXPLOIT[],.RESULTS_SHELLCODE[],.RESULTS_PAPER[] | "\(.Title)\t\u001b[90m\(."EDB-ID")\u001b[0m"' | \
+    jq -r '[ .RESULTS_EXPLOIT[],.RESULTS_SHELLCODE[],.RESULTS_PAPER[] | {title:.Title, id:."EDB-ID"}] | unique | .[] | "\(.title)\t\u001b[90m\(.id)\u001b[0m" ' | \
     fzf -0 --layout=reverse --ansi \
     --bind "enter:execute(LESS='-RMQXSW --use-color' LESSOPEN='|pygmentize -f terminal %s' searchsploit -x {-1})" \
     --bind "ctrl-c:execute-silent(searchsploit -p {-1} |  grep Path: | cut -d: -f2 | tr -d ' ' | wl-copy)" \
