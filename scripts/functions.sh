@@ -85,5 +85,19 @@ zlib-compress() {
         cat "$@" | python -c 'import sys,zlib; sys.stdout.write(zlib.compress(sys.stdin.read()))'
 }
 
+# replace searchsploit with a friendly menu -- requires fzf,jq,xdg-open and wl-copy for wayland
+searchsploit-ui() {
+    searchsploit "$@" -j | \
+    jq -r '.RESULTS_EXPLOIT[],.RESULTS_SHELLCODE[],.RESULTS_PAPER[] | "\(.Title)\t\u001b[90m\(."EDB-ID")\u001b[0m"' | \
+    fzf -0 --layout=reverse --ansi \
+    --bind "enter:execute(LESS='-RMQXSW --use-color' LESSOPEN='|pygmentize -f terminal %s' searchsploit -x {-1})" \
+    --bind "ctrl-c:execute-silent(searchsploit -p {-1} |  grep Path: | cut -d: -f2 | tr -d ' ' | wl-copy)" \
+    --bind 'ctrl-d:execute(searchsploit -m {-1})' \
+    --bind "ctrl-o:execute-silent(searchsploit -p {-1} |  grep Path: | cut -d: -f2 | tr -d ' ' | xargs xdg-open)" \
+    --bind "ctrl-w:execute-silent(searchsploit -p {-1} |  grep URL: | cut -d: -f2- | tr -d ' ' | xargs xdg-open)" \
+    --header="[ESC]Quit [Enter]View [Ctrl-C]Copy path [Ctrl-D]Copy file [Ctrl-O]Open [Ctrl-W]Web" --header-first \
+    --ellipsis=… --preview "searchsploit -p {-1}" --preview-window=down,6
+}
+
 . ~/scripts/funcs_bigip.sh
 . ~/scripts/funcs_docker.sh
